@@ -1,6 +1,6 @@
 {
   /**
-   * Config for geolistic-cli (NOT the library), remove comments to override defaults
+   * Config for local-geonames-manager-cli (NOT the library), remove comments to override defaults
    *
    * Can also be configured with env variables (see README)
   */

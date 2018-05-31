@@ -1,15 +1,12 @@
 {
-  "name": "geolistic",
-  "version": "0.2.2",
+  "name": "local-geonames-manager",
+  "version": "0.0.1",
   "description": "Enjoy millions of searchable locations in your app by importing Geoname data into Elastic",
-  "main": "geolistic-cli.js",
+  "main": "local-geonames-manager-cli.js",
   "directories": {
     "doc": "docs",
     "lib": "lib",
     "test": "test"
-  },
-  "scripts": {
-    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -26,17 +23,17 @@
     "javascript",
     "javascript-library"
   ],
-  "author": "Gunnar Skeid <gunnar.skeid@gmail.com> (https://github.com/gunske/)",
+  "author": "Miguel A. Rozalén <mikelangel1993@gmail.com> (https://github.com/MiguelRozalen)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gunske/geolistic/issues"
+    "url": "https://github.com/MiguelRozalen/local-geonames-manager/issues"
   },
-  "homepage": "https://github.com/gunske/geolistic#readme",
+  "homepage": "https://github.com/MiguelRozalen/local-geonames-manager",
   "dependencies": {
-    "elasticsearch": "13.3.x",
-    "csv-parse": "1.2.x",
-    "stream-transform": "0.1.x",
-    "download": "6.2.x",
-    "mocha": "4.0.x"
+    "elasticsearch": "^13.3.x",
+    "csv-parse": "^1.2.x",
+    "stream-transform": "^0.1.x",
+    "download": "^6.2.x",
+    "mocha": "^4.0.x"
   }
 }

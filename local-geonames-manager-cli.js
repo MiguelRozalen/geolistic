@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Geolistic command line tool
+ * Geonames Local Manager command line tool
  *
- * Copyright (c) 2017 Gunnar Skeid
+ * Copyright (c) 2018 Miguel A. Rozalén
  */
 'use strict';
 
@@ -30,7 +30,7 @@ const elasticsearch = require('elasticsearch'),
     parse = require('csv-parse'),
     fs = require('fs'),
     transform = require('stream-transform'),
-    geolistic = require('./lib').init(options);
+    geolocalmanager = require('./lib').init(options);
 
 const NS_PER_SEC = 1e9;
 
@@ -69,60 +69,13 @@ function _dbConnect(cb) {
 
 }
 
-function _search(searchString) {
-
-    _dbConnect(function () {
-
-        const path = elasticPath.split("/");
-
-        db.search({
-            index: path[0],
-            type: path[1],
-            size: 5,
-            body: {"query" :
-                    {"constant_score" :
-                        {"filter" :
-                            {"bool" :
-                                {"must" : [
-                                    {"query_string": {"query": searchString,
-                                        "fields": ["name", "asciiName", "alternateNames"]}},
-                                    {"range": {"population": {"gt": 0}}},
-                                    {"term": {"featureClass": "P" }}
-                                ]
-                                }
-                            }
-                        }
-                    },
-                "sort": [
-                    {"population": { "order": "desc"}}
-                ]
-                }
-        }, function (err, searchResult) {
-
-            if (err) {
-                console.error("Error with elastic query:");
-                console.error(err);
-                db.close();
-                return;
-            }
-
-            for (var i = 0; i < searchResult.hits.hits.length; i += 1) {
-                console.log(searchResult.hits.hits[i]);
-            }
-
-        });
-
-    });
-
-}
-
 function _add(countries) {
 
     _dbConnect(function () {
 
         try {
 
-            geolistic.config({
+            geolocalmanager.config({
                 elasticClient: db,
                 elasticPath: elasticPath
             });
@@ -185,7 +138,7 @@ function _add(countries) {
 
             processTime = process.hrtime();
 
-            geolistic.addFileToElastic(countries[index], options, function (err, result) {
+            geolocalmanager.addFileToElastic(countries[index], options, function (err, result) {
 
                 if (err) {
 
@@ -300,11 +253,10 @@ for (var i = 0; i < args.length; i += 1) {
 
 if (doHelp || (!doAdd && !doDownload && !doSearch)) {
 
-    console.log("Usage: node geolistic-cli [OPTION]\n" +
+    console.log("Usage: node geonames-local-manager-cli [OPTION]\n" +
         "Download or index geoname files in elastic\n" +
         "\n" +
         "Valid arguments:\n" +
-        "  -search <location>             Search for location (use after adding)\n" +
         "  -download <country code>       Download specified country geoname file\n" +
         "  -downloadall                   Download all country geoname files\n" +
         "  -add <country code> [fclasses] Index specified country geoname file\n" +
@@ -316,7 +268,7 @@ if (doHelp || (!doAdd && !doDownload && !doSearch)) {
         "  P - city, village\n" +
         "  etc...\n" +
         "\n" +
-        "Example: node geolistic-cli -add NO P A"
+        "Example: node local-geonames-manager-cli -add NO P A"
     );
 
     return;
@@ -333,16 +285,14 @@ if (doDownload || doAdd) {
         };
     } else {
         getCountries = function (fn) {
-            geolistic.getGeoNameCountries(fn);
+            geolocalmanager.getGeoNameCountries(fn);
         };
     }
 
     getCountries(function (err, countries) {
 
         if (err) {
-
             console.error("Error getting countries: " + err);
-
         } else {
 
             if (doDownload) {
@@ -350,7 +300,7 @@ if (doDownload || doAdd) {
                 if (testMode) {
                     countries = ['NU'];
                 }
-                geolistic.downloadGeoNameCountryFiles(countries, {
+                geolocalmanager.downloadGeoNameCountryFiles(countries, {
                     "parallelDownloads": 5,
                     "postDownload": function (files) {
 
@@ -386,9 +336,4 @@ if (doDownload || doAdd) {
             }
         }
     });
-
-} else if (doSearch) {
-
-    _search(searchString);
-
-}
+} 
