@@ -1,3 +1,5 @@
+<div style="background-color:#ddd"><img src="icons/iconCircle.png?raw=true" width="100"/></div>
+
 # Local Geonames Manager
 
 Import Geoname data to Elastic and enjoy millions of searchable locations in your app.
