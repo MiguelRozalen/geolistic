@@ -18,11 +18,11 @@ This process can be done by using a console aplication called local-geonames-man
 * Elastic schema included
 
 ## Pre-requisites
-To make it works you must install the following open source software:
+To make it work you must install the following open-source software:
 * Node.js. You can download from  [https://nodejs.org/es/download/](https://nodejs.org/es/download/)
 * Elasticsearch. You can download from [https://www.elastic.co/downloads/elasticsearch](https://www.elastic.co/downloads/elasticsearch)
 
-Don´t be afraid! Default installation worth it.
+Don´t be afraid! Default installation works!
 
 ## Local Geonames Manager Installation
 
@@ -51,7 +51,7 @@ then add all files to elastic
 $ node local-geonames-manager-cli -addall
 ```
 
-You can also download and add individual countries, e.g. for Austria
+You can also download and add individual countries, e.g. for Spain
 
 ```
 $ node local-geonames-manager-cli -download ES
@@ -68,7 +68,7 @@ $ node local-geonames-manager-cli -add ES
 After adding data, you can try searching as you do with elasticsearch API:
 
 ```
-http://localhost:9200/geonames/geoname/_search?q=(name:madrid%20OR%20asciiName:madrid%20OR%20alternateNames:madrid)%20AND%20featureClass:P
+http://localhost:9200/geonames/geoname/_search?q=Madrid
 ```
 
 ## Removing all data
@@ -88,7 +88,7 @@ Otherwise you can edit data/cli-config.json or use environment variables:
 $ export ELASTIC_URL="localhost:9200"
 $ export ELASTIC_PATH="geonames/geoname"
 $ export DATAPATH="/tmp/"
-$ node geolistic-cli.js -download AT
+$ node local-geonames-manager-cli -download ES
 ```
 
 * ELASTIC_URL: Address to connect to your elastic instance
