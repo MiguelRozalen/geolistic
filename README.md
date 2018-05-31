@@ -1,29 +1,36 @@
-# Geolistic
-[![Build Status](https://travis-ci.org/gunske/geolistic.svg?branch=master)](https://travis-ci.org/gunske/geolistic)
+# Local Geonames Manager
 
 Import Geoname data to Elastic and enjoy millions of searchable locations in your app.
 
-[Geoname](http://www.geonames.org/) is the most comprehensive open source geo location data source with
+[Geonames](http://www.geonames.org/) is the most comprehensive open source geo location data source with
 more than 11 million location points. Each location comes with a wealth of
 information and can be searched in both English and local languages.
 
-[Elastic](https://www.elastic.co/) is the leading open source search engine.
+[Elasticsearch](https://www.elastic.co/) is the leading open source search engine.
 
-Geolistic connects these powers together and geo-enables your app 
-without api restrictions.
+Local Geonames Manager connects these powers together and geo-enables your app 
+without api restrictions. Local Geonames Manager allows you to import easily geo data into elasticsearch.
+This process can be done by using a console aplication called local-geonames-manager-cli.js (included in this repository)
 
 ## Features
 * Blazing fast buffered import with batch indexing in elastic
 * Filter unwanted data based on their type (city / country etc)
 * Elastic schema included
 
-## Install
+## Pre-requisites
+To make it works you must install the following open source software:
+* Node.js. You can download from  [https://nodejs.org/es/download/](https://nodejs.org/es/download/)
+* Elasticsearch. You can download from [https://www.elastic.co/downloads/elasticsearch](https://www.elastic.co/downloads/elasticsearch)
+
+Don´t be afraid! Default installation worth it.
+
+## Local Geonames Manager Installation
 
 ```
-$ npm install geolistic
+$ npm install
 ```
 
-### Add schema to elastic
+### Add schema to elasticsearch (default installation does not required this step)
 
 ```
 $ curl -XPUT http://127.0.0.1:9200/geonames -d @data/schema.json
@@ -35,70 +42,41 @@ $ curl -XPUT http://127.0.0.1:9200/geonames -d @data/schema.json
 Use the included command line tool to download all data files
 
 ```
-$ node geolistic-cli -downloadall
+$ node local-geonames-manager-cli -downloadall
 ```
 
 then add all files to elastic
 
 ```
-$ node geolistic-cli -addall
+$ node local-geonames-manager-cli -addall
 ```
 
 You can also download and add individual countries, e.g. for Austria
 
 ```
-$ node geolistic-cli -download AT
+$ node local-geonames-manager-cli -download ES
 ```
 
 and add it
 
 ```
-$ node geolistic-cli -add AT
+$ node local-geonames-manager-cli -add ES
 ```
 
 #### Searching
 
-After adding data, you can try searching:
+After adding data, you can try searching as you do with elasticsearch API:
 
 ```
-$ node geolistic-cli -search Wien
+http://localhost:9200/geonames/geoname/_search?q=(name:madrid%20OR%20asciiName:madrid%20OR%20alternateNames:madrid)%20AND%20featureClass:P
 ```
 
-Sample query you can use in your own project:
-```
-GET /geonames/geoname/_search
-{
-  "query" : {
-      "constant_score" : {
-         "filter" : {
-            "bool" : {
-              "must" : [
-                {"query_string": {
-                    "query": "Wien",
-                    "fields": ["name", "asciiName", "alternateNames"]}
-                },
-                { "range": { "population": {"gt": 0}}},
-                { "term": { "featureClass": "P" }}
-              ]
-           }
-         }
-      }
-   },
-   "sort": [ {"population": {"order": "desc"}}]
-}
-```
+## Removing all data
 
-### Using the library
-Use as library or command line tool. Init the library like this:
-
+If you need to reset all geonames data you can set the following request:
 ```
-const geolistic = require('geolistic');
-geolistic.getGeoNameCountries({allColoumns: true}, function (err, countries) {
-   // ...
-});
+$ curl -XDELETE localhost:9200/geonames
 ```
-
-See the api documentation [here](./docs/index.html)
 
 ## Configuration
 
@@ -121,4 +99,4 @@ $ node geolistic-cli.js -download AT
 
 [The MIT License](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2017 Gunnar Skeid
+Copyright (c) 2018 Miguel A. Rozalén
